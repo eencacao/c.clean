@@ -27,3 +27,9 @@ An application with the following layers:
 │── README.md
 └── Makefile
 ```
+
+### Run
+
+```bash
+make run
+```
