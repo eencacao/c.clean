@@ -43,7 +43,7 @@ static void handle_get_all(TodoUseCase *uc, int fd) {
     server_respond(fd, 200, buf);
 }
 
-static void handle_post(TodoUseCase *uc, HttpRequest *req) {
+static void handle_post(TodoUseCase *uc, const HttpRequest *req) {
     char title[TITLE_LEN];
     parse_title(req->body, title, TITLE_LEN);
     if (title[0] == '\0') {
@@ -52,12 +52,12 @@ static void handle_post(TodoUseCase *uc, HttpRequest *req) {
         return;
     }
     char buf[RESP_SIZE];
-    Todo *t = uc_create(uc, title);
+    const Todo *t = uc_create(uc, title);
     json_todo(buf, RESP_SIZE, t);
     server_respond(req->client_fd, 201, buf);
 }
 
-void handle_request(TodoUseCase *uc, HttpRequest *req) {
+void handle_request(TodoUseCase *uc, const HttpRequest *req) {
     int is_item = (int)strlen(req->path) > 7 &&
                   strncmp(req->path, "/todos/", 7) == 0;
     if (!is_item) {
