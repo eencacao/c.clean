@@ -4,14 +4,14 @@
 
 static void set_time(char *buf) {
     time_t t = time(NULL);
-    struct tm *tm = gmtime(&t);
+    const struct tm *tm = gmtime(&t);
     strftime(buf, DATE_LEN, "%Y-%m-%dT%H:%M:%SZ", tm);
 }
 
-Todo *repo_get_all(TodoRepository *r, int *count) {
-    MemoryRepo *mr = (MemoryRepo *)r;
+Todo *repo_get_all(const TodoRepository *r, int *count) {
+    const MemoryRepo *mr = (const MemoryRepo *)r;
     *count = mr->count;
-    return mr->items;
+    return (Todo *)mr->items;
 }
 
 Todo *repo_get_by_id(TodoRepository *r, int id) {
