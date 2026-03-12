@@ -1,26 +1,21 @@
-CC = gcc
-
-CFLAGS = -Wall -Wextra -Wpedantic -g
-
+CC      = gcc
+CFLAGS  = -Wall -Wextra -Wpedantic -g -Isrc
 SRC_DIR = src
 OBJ_DIR = obj
 BIN_DIR = bin
+TARGET  = $(BIN_DIR)/todo_api
 
-SOURCES = $(shell find $(SRC_DIR) -type f -name "*.c")
-OBJECTS = $(patsubst $(SRC_DIR)/%.c, $(OBJ_DIR)/%.o, $(SOURCES))
+SOURCES = $(shell find $(SRC_DIR) -name "*.c")
+OBJECTS = $(patsubst $(SRC_DIR)/%.c,$(OBJ_DIR)/%.o,$(SOURCES))
 
-TARGET = $(BIN_DIR)/user_management
+all: dirs $(TARGET)
 
-.NOTPARALLEL: directories $(TARGET) clean
-
-all: directories $(TARGET)
-
-directories:
-	mkdir -p $(BIN_DIR) $(OBJ_DIR)
-	mkdir -p $(shell find $(SRC_DIR) -type d | sed "s|^$(SRC_DIR)|$(OBJ_DIR)|")
+dirs:
+	mkdir -p $(BIN_DIR)
+	@find $(SRC_DIR) -type d | while read d; do \
+	    mkdir -p $(OBJ_DIR)/$${d#$(SRC_DIR)/}; done
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
-	@mkdir -p $(dir $@)  # Ensure the obj subdirectory exists
 	$(CC) $(CFLAGS) -c $< -o $@
 
 $(TARGET): $(OBJECTS)
@@ -31,6 +26,3 @@ clean:
 
 run: all
 	./$(TARGET)
-
-debug: CFLAGS += -DDEBUG -g
-debug: clean all

@@ -1,30 +1,19 @@
 #include <stdio.h>
-#include "infrastructure/in_memory_user_repository.h"
-#include "usecases/user_service.h"
+#include "infrastructure/memory_repo.h"
+#include "usecases/todo_usecase.h"
+#include "adapters/http_server.h"
+#include "adapters/todo_handler.h"
 
-int main()
-{
-    InMemoryUserRepository repository;
-    in_memory_user_repository_init(&repository);
-
-    UserService service;
-    user_service_init(&service, (UserRepository *)&repository);
-
-    user_service_add_user(&service, 1, "Alice");
-    user_service_add_user(&service, 2, "Bob");
-
-    printf("User List:\n");
-    user_service_list_users(&service);
-
-    User *user = user_service_get_user(&service, 1);
-    if (user)
-    {
-        printf("\nFetched User: ID=%d, Name=%s\n", user->id, user->name);
-    }
-    else
-    {
-        printf("\nUser not found!\n");
-    }
-
+int main(void) {
+    MemoryRepo  repo;
+    TodoUseCase uc;
+    HttpRequest req;
+    int         server_fd;
+    memory_repo_init(&repo);
+    uc_init(&uc, (TodoRepository *)&repo);
+    server_fd = server_init(8080);
+    printf("Listening on :8080\n");
+    while (server_accept(server_fd, &req) == 0)
+        handle_request(&uc, &req);
     return 0;
 }
