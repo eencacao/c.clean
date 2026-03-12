@@ -4,7 +4,7 @@
 #include "entities/todo.h"
 
 typedef struct TodoRepository {
-    Todo *(*get_all)(struct TodoRepository *, int *count);
+    Todo *(*get_all)(const struct TodoRepository *, int *count);
     Todo *(*get_by_id)(struct TodoRepository *, int id);
     Todo *(*save)(struct TodoRepository *, const char *title);
     Todo *(*update)(struct TodoRepository *, int,

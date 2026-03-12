@@ -1,8 +1,8 @@
 #include <string.h>
 #include "memory_repo.h"
 
-Todo *repo_update(TodoRepository *r, int id,
-                  const char *title, int done) {
+static Todo *repo_update(TodoRepository *r, int id,
+                         const char *title, int done) {
     MemoryRepo *mr = (MemoryRepo *)r;
     for (int i = 0; i < mr->count; i++) {
         if (mr->items[i].id == id) {
@@ -15,7 +15,7 @@ Todo *repo_update(TodoRepository *r, int id,
     return NULL;
 }
 
-int repo_delete(TodoRepository *r, int id) {
+static int repo_delete(TodoRepository *r, int id) {
     MemoryRepo *mr = (MemoryRepo *)r;
     for (int i = 0; i < mr->count; i++) {
         if (mr->items[i].id == id) {
